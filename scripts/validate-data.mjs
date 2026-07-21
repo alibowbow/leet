@@ -28,6 +28,9 @@ for (const [index, question] of exam2027.questions.entries()) {
   assert(question.choices.every((choice, choiceIndex) => choice.number === choiceIndex + 1), `${tag}: 선택지 번호가 잘못되었습니다.`);
   assert(Boolean(question.explanation?.summary), `${tag}: 해설 요약이 없습니다.`);
   assert(Array.isArray(question.explanation?.verdicts) && question.explanation.verdicts.length > 0, `${tag}: 선지 판정이 없습니다.`);
+  assert(Boolean(question.explanation?.detail?.principle), `${tag}: 상세 해설의 핵심 원리가 없습니다.`);
+  assert(Array.isArray(question.explanation?.detail?.steps) && question.explanation.detail.steps.length >= 3, `${tag}: 상세 해설은 3단계 이상이어야 합니다.`);
+  assert(Boolean(question.explanation?.detail?.trap), `${tag}: 상세 해설의 함정 설명이 없습니다.`);
 
   if (question.statements?.length && question.choices[question.answer - 1]?.members) {
     const answerMembers = question.choices[question.answer - 1].members;

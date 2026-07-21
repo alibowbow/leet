@@ -12,6 +12,19 @@ export function directChoices(labels) {
   return labels.map((label, index) => ({ number: index + 1, label }));
 }
 
+export function argumentChoices(items) {
+  return items.map((item, index) => ({
+    number: index + 1,
+    label: item.label,
+    diagram: {
+      type: "argument",
+      roots: item.roots,
+      levels: item.levels,
+      ariaLabel: item.ariaLabel ?? item.label,
+    },
+  }));
+}
+
 export function section(title, text, options = {}) {
   return { title, text, ...options };
 }
