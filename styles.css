@@ -282,9 +282,10 @@ button { color: inherit; }
 .sheet { width: 100%; max-width: none; height: 100%; max-height: none; margin: 0; padding: 0; border: 0; background: transparent; }
 .sheet::backdrop { background: rgba(10,17,34,.52); backdrop-filter: blur(7px); }
 .sheet[open] { display: grid; place-items: center; }
-.sheet-card { width: min(760px, calc(100% - 32px)); max-height: calc(100% - 44px); overflow: hidden; padding: 22px; border: 1px solid rgba(255,255,255,.55); border-radius: 22px; background: #fbfaf6; box-shadow: 0 35px 100px rgba(8,14,28,.35); }
+.sheet-card { width: min(760px, calc(100% - 32px)); max-height: calc(100% - 44px); min-height: 0; display: flex; flex-direction: column; overflow: hidden; padding: 22px; border: 1px solid rgba(255,255,255,.55); border-radius: 22px; background: #fbfaf6; box-shadow: 0 35px 100px rgba(8,14,28,.35); }
+[data-index-dialog] .sheet-card { height: min(720px, calc(var(--app-height, 100dvh) - 44px)); }
 .sheet-card-small { width: min(440px, calc(100% - 32px)); }
-.sheet-head { display: flex; align-items: center; gap: 16px; margin-bottom: 18px; }
+.sheet-head { flex: none; display: flex; align-items: center; gap: 16px; margin-bottom: 18px; }
 .sheet-head > div:first-child { display: flex; flex-direction: column; }
 .sheet-head span { color: var(--gold); font-size: 9px; font-weight: 900; letter-spacing: .14em; }
 .sheet-head h2 { margin: 3px 0 0; font: 700 21px/1.1 Georgia, "Noto Serif KR", serif; }
@@ -293,10 +294,15 @@ button { color: inherit; }
 .legend i { width: 8px; height: 8px; border-radius: 50%; background: #d4d8e0; }
 .legend i.correct { background: var(--green); }
 .legend i.wrong { background: var(--red); }
-.question-index { display: grid; grid-template-columns: repeat(8, 1fr); gap: 9px; }
-.index-button { position: relative; aspect-ratio: 1; border: 1px solid #d9dce3; border-radius: 12px; color: #4e5a71; background: white; font: 700 13px/1 Georgia, serif; cursor: pointer; }
+.question-index { min-height: 0; flex: 1 1 auto; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); align-content: start; gap: 9px; overflow-x: hidden; overflow-y: auto; overscroll-behavior-y: contain; -webkit-overflow-scrolling: touch; touch-action: pan-y; padding: 2px 6px 8px 2px; scrollbar-gutter: stable; }
+.question-index::-webkit-scrollbar { width: 5px; }
+.question-index::-webkit-scrollbar-thumb { border-radius: 999px; background: #b7bdc9; }
+.index-button { position: relative; min-width: 0; min-height: 54px; display: grid; grid-template-columns: 34px minmax(0, 1fr); align-items: center; gap: 9px; padding: 8px 12px; border: 1px solid #d9dce3; border-radius: 12px; color: #4e5a71; background: white; cursor: pointer; text-align: left; }
+.index-number { font: 750 14px/1 Georgia, "Times New Roman", serif; letter-spacing: .02em; }
+.index-keyword { min-width: 0; color: #9a742d; font-size: 11px; font-weight: 800; line-height: 1.35; letter-spacing: -.02em; white-space: normal; word-break: keep-all; overflow-wrap: anywhere; }
 .index-button:hover { border-color: #9fa9bc; transform: translateY(-1px); }
 .index-button.is-current { color: white; border-color: var(--navy); background: var(--navy); }
+.index-button.is-current .index-keyword { color: #f0dcae; }
 .index-button.is-correct:not(.is-current)::after, .index-button.is-wrong:not(.is-current)::after, .index-button.is-done:not(.is-current)::after { content: ""; position: absolute; right: 6px; top: 6px; width: 6px; height: 6px; border-radius: 50%; background: #b7becb; }
 .index-button.is-correct:not(.is-current)::after { background: var(--green); }
 .index-button.is-wrong:not(.is-current)::after { background: var(--red); }
@@ -445,8 +451,13 @@ button { color: inherit; }
 
   .bottom-nav { grid-template-columns: 84px minmax(60px, 1fr) 84px; gap: 10px; padding: 0 9px; padding-bottom: max(0px, env(safe-area-inset-bottom)); }
   .nav-button { height: 35px; }
-  .question-index { grid-template-columns: repeat(5, 1fr); gap: 7px; }
+  [data-index-dialog] .sheet-card { width: calc(100% - 18px); height: calc(var(--app-height, 100dvh) - 20px); max-height: calc(var(--app-height, 100dvh) - 20px); }
+  .question-index { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px; padding-right: 4px; }
+  .index-button { min-height: 52px; grid-template-columns: 30px minmax(0, 1fr); gap: 7px; padding: 7px 9px; }
+  .index-number { font-size: 13px; }
+  .index-keyword { font-size: 10px; }
   .sheet-card { padding: 16px; }
+  .sheet-head { margin-bottom: 13px; }
   .legend { display: none; }
 }
 

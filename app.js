@@ -460,9 +460,16 @@ function openIndex() {
     const status = isEssay()
       ? (response.checked ? "is-done" : "")
       : (response.checked ? (response.selected === question.answer ? "is-correct" : "is-wrong") : (response.selected ? "is-done" : ""));
-    return `<button class="index-button ${index === state.index ? "is-current" : ""} ${status}" type="button" data-jump="${index}">${String(question.id).padStart(2, "0")}</button>`;
+    const number = String(question.id).padStart(2, "0");
+    return `<button class="index-button ${index === state.index ? "is-current" : ""} ${status}" type="button" data-jump="${index}" aria-label="${question.id}번 · ${escapeHtml(question.type)}">
+      <span class="index-number" aria-hidden="true">${number}</span>
+      <span class="index-keyword">${escapeHtml(question.type)}</span>
+    </button>`;
   }).join("");
   $("[data-index-dialog]").showModal();
+  requestAnimationFrame(() => {
+    $("[data-question-index] .is-current")?.scrollIntoView?.({ block: "center", inline: "nearest" });
+  });
 }
 
 function openYears() {
