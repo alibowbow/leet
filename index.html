@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#101b35">
+    <meta
+      name="description"
+      content="LEET 추리논증 기출문제를 한 문항씩 풀고, 정답과 구조화된 해설을 바로 확인하는 학습 웹앱"
+    >
+    <title>LEET 추리논증</title>
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <button class="brand" type="button" data-action="home" aria-label="첫 문항으로 이동">
+          <span class="brand-mark">L</span>
+          <span class="brand-copy">
+            <strong>LEET</strong>
+            <small>추리논증</small>
+          </span>
+        </button>
+
+        <div class="topbar-center">
+          <button class="year-pill" type="button" data-action="open-years">
+            <span data-year-label>2027학년도</span>
+            <svg viewBox="0 0 20 20" aria-hidden="true"><path d="m6 8 4 4 4-4" /></svg>
+          </button>
+          <button class="question-pill" type="button" data-action="open-index">
+            <span data-question-label>01 / 40</span>
+          </button>
+        </div>
+
+        <button class="progress-button" type="button" data-action="open-index" aria-label="문항 목록 열기">
+          <span class="progress-ring" data-progress-ring><span data-progress-value>0</span></span>
+          <span class="progress-copy"><strong data-solved-label>0문항 완료</strong><small>진행 현황</small></span>
+        </button>
+      </header>
+
+      <main class="study-stage" aria-live="polite">
+        <div class="question-card" data-question-card>
+          <section class="card-face card-front" aria-label="문제">
+            <div class="question-head">
+              <div class="question-kicker">
+                <span class="question-number" data-question-number>01</span>
+                <div>
+                  <span data-question-type>추리논증</span>
+                  <strong data-question-stem></strong>
+                </div>
+              </div>
+              <div class="head-actions">
+                <button class="icon-button" type="button" data-action="reset-current" aria-label="현재 문항 답안 지우기">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4v6h6M20 20v-6h-6M6.5 17.5a8 8 0 0 0 12-2M17.5 6.5a8 8 0 0 0-12 2" /></svg>
+                </button>
+              </div>
+            </div>
+
+            <div class="mobile-section-tabs" data-mobile-tabs role="tablist"></div>
+
+            <div class="question-layout">
+              <article class="source-pane" data-source-pane>
+                <div class="fit-content source-content" data-source-content></div>
+              </article>
+              <aside class="answer-pane" data-answer-pane aria-label="보기와 답안">
+                <div class="fit-content answer-content">
+                  <div class="statement-stack" data-statements></div>
+                  <div class="choice-grid" data-choices></div>
+                </div>
+                <div class="answer-action-row">
+                  <p class="selection-hint" data-selection-hint>답을 선택하세요</p>
+                  <button class="primary-button" type="button" data-action="check-answer" disabled>
+                    정답 확인
+                    <svg viewBox="0 0 20 20" aria-hidden="true"><path d="m7 4 6 6-6 6" /></svg>
+                  </button>
+                </div>
+              </aside>
+            </div>
+          </section>
+
+          <section class="card-face card-back" aria-label="해설">
+            <div class="solution-head">
+              <div>
+                <span class="solution-eyebrow">ANSWER &amp; REASONING</span>
+                <h2><span data-solution-number>01</span>번 해설</h2>
+              </div>
+              <button class="ghost-button" type="button" data-action="flip-front">
+                문제로 돌아가기
+                <svg viewBox="0 0 20 20" aria-hidden="true"><path d="m12.5 4-6 6 6 6" /></svg>
+              </button>
+            </div>
+
+            <div class="solution-layout">
+              <section class="solution-primary">
+                <div class="answer-reveal" data-answer-reveal></div>
+                <div class="solution-summary" data-solution-summary></div>
+                <div class="solution-visual" data-solution-visual></div>
+              </section>
+              <aside class="verdict-pane" aria-label="선지 판정">
+                <div class="verdict-heading">
+                  <span>선지 판정</span>
+                  <small>근거를 짧게 확인하세요</small>
+                </div>
+                <div class="verdict-list" data-verdicts></div>
+              </aside>
+            </div>
+          </section>
+        </div>
+      </main>
+
+      <nav class="bottom-nav" aria-label="문항 이동">
+        <button class="nav-button" type="button" data-action="previous">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 5-7 7 7 7" /></svg>
+          <span>이전</span>
+        </button>
+        <div class="question-progress"><span data-progress-bar></span></div>
+        <button class="nav-button nav-button-next" type="button" data-action="next">
+          <span>다음</span>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7" /></svg>
+        </button>
+      </nav>
+    </div>
+
+    <dialog class="sheet" data-year-dialog>
+      <div class="sheet-card sheet-card-small">
+        <div class="sheet-head"><div><span>YEAR</span><h2>학년도 선택</h2></div><button class="close-button" type="button" data-action="close-dialog" aria-label="닫기">×</button></div>
+        <div class="year-list" data-year-list></div>
+      </div>
+    </dialog>
+
+    <dialog class="sheet" data-index-dialog>
+      <div class="sheet-card">
+        <div class="sheet-head">
+          <div><span data-index-year>2027학년도</span><h2>문항 바로가기</h2></div>
+          <div class="legend"><i class="done"></i>풀이 완료 <i class="correct"></i>정답 <i class="wrong"></i>오답</div>
+          <button class="close-button" type="button" data-action="close-dialog" aria-label="닫기">×</button>
+        </div>
+        <div class="question-index" data-question-index></div>
+      </div>
+    </dialog>
+
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>
