@@ -104,6 +104,7 @@ function formatInline(value = "") {
   return escapeHtml(value)
     .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
     .replace(/`(.+?)`/g, "<code>$1</code>")
+    .replace(/\[\[u\]\]([\s\S]+?)\[\[\/u\]\]/g, '<span class="source-underline">$1</span>')
     .replace(/\n/g, "<br>");
 }
 

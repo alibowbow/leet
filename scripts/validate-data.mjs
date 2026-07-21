@@ -7,6 +7,11 @@ const official2027 = [
   3, 3, 2, 4, 3, 3, 3, 1, 4, 1,
 ];
 
+const officialUnderlineCounts2027 = new Map([
+  [1, 1], [2, 2], [8, 5], [11, 3], [13, 2], [14, 3],
+  [18, 1], [22, 2], [29, 1], [37, 3], [38, 1], [39, 1],
+]);
+
 const failures = [];
 const assert = (condition, message) => { if (!condition) failures.push(message); };
 
@@ -14,6 +19,7 @@ assert(exam2027.year === 2027, "시험 연도가 2027이 아닙니다.");
 assert(exam2027.questions.length === 40, "2027학년도 문항 수는 40이어야 합니다.");
 
 const ids = new Set();
+let totalUnderlines = 0;
 for (const [index, question] of exam2027.questions.entries()) {
   const tag = `${question.id}번`;
   assert(question.id === index + 1, `${tag}: 문항 순서가 연속적이지 않습니다.`);
@@ -32,6 +38,17 @@ for (const [index, question] of exam2027.questions.entries()) {
   assert(Array.isArray(question.explanation?.detail?.steps) && question.explanation.detail.steps.length >= 3, `${tag}: 상세 해설은 3단계 이상이어야 합니다.`);
   assert(Boolean(question.explanation?.detail?.trap), `${tag}: 상세 해설의 함정 설명이 없습니다.`);
 
+  const serialized = JSON.stringify(question);
+  const underlineStarts = serialized.match(/\[\[u\]\]/g)?.length ?? 0;
+  const underlineEnds = serialized.match(/\[\[\/u\]\]/g)?.length ?? 0;
+  totalUnderlines += underlineStarts;
+  assert(underlineStarts === underlineEnds, `${tag}: 원문 밑줄 표식의 시작과 끝이 맞지 않습니다.`);
+  assert(!serialized.includes("[[u]][[/u]]"), `${tag}: 내용이 없는 원문 밑줄 표식이 있습니다.`);
+  assert(
+    underlineStarts === (officialUnderlineCounts2027.get(question.id) ?? 0),
+    `${tag}: PDF 원문의 밑줄 개수와 일치하지 않습니다.`,
+  );
+
   if (question.statements?.length && question.choices[question.answer - 1]?.members) {
     const answerMembers = question.choices[question.answer - 1].members;
     const trueMembers = question.statements
@@ -43,6 +60,8 @@ for (const [index, question] of exam2027.questions.entries()) {
     );
   }
 }
+
+assert(totalUnderlines === 25, "PDF 원문의 전체 밑줄 개수는 25개여야 합니다.");
 
 if (failures.length) {
   console.error(`데이터 검증 실패 (${failures.length}건)`);
