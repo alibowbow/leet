@@ -16,7 +16,6 @@ const state = {
   index: Math.max(0, (Number(hashMatch?.[2]) || Number(stored.lastQuestion) || 1) - 1),
   responses: stored.responses ?? {},
   flipped: false,
-  mobileTab: 0,
 };
 
 if (!exams.some((exam) => exam.year === state.year)) state.year = exams[0].year;
@@ -71,7 +70,6 @@ function renderQuestion() {
   const question = currentQuestion();
   const response = currentResponse();
   state.flipped = false;
-  state.mobileTab = 0;
   $("[data-question-card]").classList.remove("is-flipped");
 
   $("[data-year-label]").textContent = `${exam.year}학년도`;
@@ -92,46 +90,21 @@ function renderQuestion() {
     </div>`).join("");
 
   $("[data-choices]").innerHTML = question.choices.map((choice) => `
-    <button class="choice ${response.selected === choice.number ? "is-selected" : ""}" type="button" data-choice="${choice.number}">
+    <button class="choice ${response.selected === choice.number ? "is-selected" : ""}" type="button" data-choice="${choice.number}" aria-pressed="${response.selected === choice.number}">
       <span class="choice-number">${choice.number}</span>
       <span class="choice-text">${formatInline(choice.label)}</span>
       <span class="choice-mark">✓</span>
     </button>`).join("");
 
-  const checkButton = $("[data-action='check-answer']");
-  checkButton.disabled = !response.selected;
   $("[data-selection-hint]").innerHTML = response.selected
-    ? `<strong>${circled[response.selected - 1]}</strong>번을 선택했습니다`
-    : "답을 선택하세요";
+    ? `<strong>${circled[response.selected - 1]}</strong>번 선택 · 다시 누르면 해제`
+    : "답을 고르지 않아도 해설을 볼 수 있습니다";
 
-  renderMobileTabs(question);
   renderSolution(question, response);
   renderProgress();
   updateNavigation();
   setHash();
   save();
-  requestAnimationFrame(fitVisibleContent);
-}
-
-function renderMobileTabs(question) {
-  const tabs = question.sections.map((block, index) => ({ label: block.tab ?? block.title ?? `지문 ${index + 1}`, pane: "source", section: index }));
-  tabs.push({ label: "보기 · 답안", pane: "answer" });
-  $("[data-mobile-tabs]").innerHTML = tabs.map((tab, index) => `
-    <button class="mobile-tab ${index === 0 ? "is-active" : ""}" type="button" data-mobile-tab="${index}" data-pane="${tab.pane}" data-section="${tab.section ?? ""}">${escapeHtml(tab.label)}</button>`).join("");
-  activateMobileTab(0);
-}
-
-function activateMobileTab(tabIndex) {
-  state.mobileTab = tabIndex;
-  const tabs = $$('[data-mobile-tab]');
-  const tab = tabs[tabIndex] ?? tabs[0];
-  tabs.forEach((item, index) => item.classList.toggle("is-active", index === tabIndex));
-  const sourcePane = $("[data-source-pane]");
-  const answerPane = $("[data-answer-pane]");
-  const sourceActive = tab?.dataset.pane === "source";
-  sourcePane.classList.toggle("is-mobile-active", sourceActive);
-  answerPane.classList.toggle("is-mobile-active", !sourceActive);
-  $$('[data-section-index]', sourcePane).forEach((section) => section.classList.toggle("is-mobile-active", Number(section.dataset.sectionIndex) === Number(tab?.dataset.section)));
   requestAnimationFrame(fitVisibleContent);
 }
 
@@ -142,7 +115,9 @@ function renderSolution(question, response) {
   $("[data-answer-reveal]").innerHTML = `
     <span class="answer-badge">${question.answer}</span>
     <span class="answer-copy"><small>공식 정답</small><strong>${circled[question.answer - 1]} ${formatInline(answerChoice.label)}</strong></span>
-    ${checked ? `<span class="result-chip ${correct ? "correct" : "wrong"}">${correct ? "정답입니다" : `선택 ${circled[response.selected - 1]}`}</span>` : ""}`;
+    ${checked
+      ? `<span class="result-chip ${correct ? "correct" : "wrong"}">${correct ? "정답입니다" : `선택 ${circled[response.selected - 1]}`}</span>`
+      : `<span class="result-chip neutral">미응답 · 해설 확인</span>`}`;
   $("[data-solution-summary]").innerHTML = `<p>${formatInline(question.explanation.summary)}</p>`;
   $("[data-solution-visual]").innerHTML = renderVisual(question.explanation.visual);
   $("[data-verdicts]").innerHTML = question.explanation.verdicts.map((verdict) => `
@@ -165,10 +140,8 @@ function renderVisual(visual) {
 
 function fitVisibleContent() {
   if (matchMedia("(max-width: 920px)").matches) {
-    const activePane = $(".source-pane.is-mobile-active, .answer-pane.is-mobile-active");
-    if (!activePane) return;
-    const content = $(".fit-content", activePane);
-    if (content) fitElement(content, activePane.classList.contains("source-pane") ? 10 : 10.5, activePane.classList.contains("source-pane") ? 15 : 14);
+    fitElement($("[data-source-content]"), 8.5, 13.5);
+    fitElement($(".answer-content"), 8.5, 12.5);
     return;
   }
   fitElement($("[data-source-content]"), 10.5, 15.5);
@@ -204,16 +177,16 @@ function updateNavigation() {
 
 function selectChoice(number) {
   const key = responseKey();
-  state.responses[key] = { ...state.responses[key], selected: number, checked: false };
+  const response = state.responses[key] ?? {};
+  if (response.selected === number) delete state.responses[key];
+  else state.responses[key] = { selected: number, checked: false };
   save();
   renderQuestion();
-  if (matchMedia("(max-width: 920px)").matches) activateMobileTab(currentQuestion().sections.length);
 }
 
 function checkAnswer() {
   const response = currentResponse();
-  if (!response.selected) return;
-  state.responses[responseKey()] = { ...response, checked: true };
+  if (response.selected) state.responses[responseKey()] = { ...response, checked: true };
   state.flipped = true;
   save();
   renderSolution(currentQuestion(), currentResponse());
@@ -247,8 +220,6 @@ function openYears() {
 document.addEventListener("click", (event) => {
   const choice = event.target.closest("[data-choice]");
   if (choice) return selectChoice(Number(choice.dataset.choice));
-  const mobileTab = event.target.closest("[data-mobile-tab]");
-  if (mobileTab) return activateMobileTab(Number(mobileTab.dataset.mobileTab));
   const jump = event.target.closest("[data-jump]");
   if (jump) { state.index = Number(jump.dataset.jump); $("[data-index-dialog]").close(); return renderQuestion(); }
   const year = event.target.closest("[data-year]");
