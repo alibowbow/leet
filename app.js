@@ -2,6 +2,7 @@ import { exams } from "./data/index.js";
 import { circled } from "./data/helpers.js";
 
 const STORAGE_KEY = "leet-reasoning-v1";
+const COMPACT_VIEW = "(max-width: 920px), (max-width: 1180px) and (max-height: 620px)";
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 
@@ -65,10 +66,12 @@ function formatInline(value = "") {
     .replace(/\n/g, "<br>");
 }
 
-function renderQuestion() {
+function renderQuestion({ preserveScroll = false } = {}) {
   const exam = currentExam();
   const question = currentQuestion();
   const response = currentResponse();
+  const questionLayout = $(".question-layout");
+  const previousScroll = preserveScroll ? questionLayout?.scrollTop ?? 0 : 0;
   state.flipped = false;
   $("[data-question-card]").classList.remove("is-flipped");
 
@@ -96,16 +99,18 @@ function renderQuestion() {
       <span class="choice-mark">✓</span>
     </button>`).join("");
 
-  $("[data-selection-hint]").innerHTML = response.selected
-    ? `<strong>${circled[response.selected - 1]}</strong>번 선택 · 다시 누르면 해제`
-    : "답을 고르지 않아도 해설을 볼 수 있습니다";
-
   renderSolution(question, response);
   renderProgress();
   updateNavigation();
   setHash();
   save();
-  requestAnimationFrame(fitVisibleContent);
+  if (!preserveScroll && questionLayout) questionLayout.scrollTop = 0;
+  const solutionLayout = $(".solution-layout");
+  if (solutionLayout) solutionLayout.scrollTop = 0;
+  requestAnimationFrame(() => {
+    fitVisibleContent();
+    if (preserveScroll && questionLayout) questionLayout.scrollTop = previousScroll;
+  });
 }
 
 function renderSolution(question, response) {
@@ -115,9 +120,7 @@ function renderSolution(question, response) {
   $("[data-answer-reveal]").innerHTML = `
     <span class="answer-badge">${question.answer}</span>
     <span class="answer-copy"><small>공식 정답</small><strong>${circled[question.answer - 1]} ${formatInline(answerChoice.label)}</strong></span>
-    ${checked
-      ? `<span class="result-chip ${correct ? "correct" : "wrong"}">${correct ? "정답입니다" : `선택 ${circled[response.selected - 1]}`}</span>`
-      : `<span class="result-chip neutral">미응답 · 해설 확인</span>`}`;
+    ${checked ? `<span class="result-chip ${correct ? "correct" : "wrong"}">${correct ? "정답입니다" : `선택 ${circled[response.selected - 1]}`}</span>` : ""}`;
   $("[data-solution-summary]").innerHTML = `<p>${formatInline(question.explanation.summary)}</p>`;
   $("[data-solution-visual]").innerHTML = renderVisual(question.explanation.visual);
   $("[data-verdicts]").innerHTML = question.explanation.verdicts.map((verdict) => `
@@ -139,9 +142,9 @@ function renderVisual(visual) {
 }
 
 function fitVisibleContent() {
-  if (matchMedia("(max-width: 920px)").matches) {
-    fitElement($("[data-source-content]"), 8.5, 13.5);
-    fitElement($(".answer-content"), 8.5, 12.5);
+  if (matchMedia(COMPACT_VIEW).matches) {
+    $("[data-source-content]")?.style.removeProperty("--fit-size");
+    $(".answer-content")?.style.removeProperty("--fit-size");
     return;
   }
   fitElement($("[data-source-content]"), 10.5, 15.5);
@@ -181,7 +184,7 @@ function selectChoice(number) {
   if (response.selected === number) delete state.responses[key];
   else state.responses[key] = { selected: number, checked: false };
   save();
-  renderQuestion();
+  renderQuestion({ preserveScroll: true });
 }
 
 function checkAnswer() {
