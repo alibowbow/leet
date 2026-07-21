@@ -35,7 +35,7 @@ body {
 button, select { font: inherit; }
 button { color: inherit; }
 
-.app-shell { width: 100%; height: 100%; height: var(--app-height, 100dvh); display: grid; grid-template-rows: 68px minmax(0, 1fr) 58px; }
+.app-shell { width: 100%; height: 100%; height: var(--app-height, 100dvh); display: grid; grid-template-rows: 68px 42px minmax(0, 1fr) 58px; }
 
 .topbar {
   display: grid;
@@ -69,6 +69,11 @@ button { color: inherit; }
 .progress-copy { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; }
 .progress-copy strong { font-size: 12px; }
 .progress-copy small { color: rgba(255,255,255,.52); font-size: 10px; }
+
+.part-tabs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: center; gap: 4px; padding: 5px max(18px, calc((100% - 440px) / 2)); border-bottom: 1px solid #d9dce4; background: rgba(250,249,245,.96); box-shadow: 0 4px 14px rgba(16,27,53,.05); z-index: 15; }
+.part-tab { height: 31px; padding: 0 18px; border: 0; border-radius: 9px; color: #657087; background: transparent; font-size: 11px; font-weight: 800; letter-spacing: -.02em; cursor: pointer; transition: .18s ease; }
+.part-tab:hover { color: var(--navy); background: #eef0f4; }
+.part-tab.is-active { color: white; background: linear-gradient(120deg, var(--navy), #253b69); box-shadow: 0 5px 13px rgba(16,27,53,.16); }
 
 .study-stage { min-height: 0; padding: 16px 22px 12px; perspective: 1800px; }
 .question-card { position: relative; width: min(1440px, 100%); height: 100%; margin: 0 auto; transform-style: preserve-3d; transition: transform .58s cubic-bezier(.2,.75,.2,1); }
@@ -142,6 +147,20 @@ button { color: inherit; }
 .choice-mark { opacity: 0; color: var(--gold); font-weight: 900; }
 .choice.is-selected .choice-mark { opacity: 1; }
 
+.question-card.is-essay .question-layout { grid-template-columns: minmax(0, 1.05fr) minmax(430px, .95fr); }
+.question-card.is-essay .source-content { font-size: 14px; line-height: 1.72; }
+.question-card.is-essay .original-source { display: grid; gap: 14px; padding: 0; border: 0; background: transparent; }
+.question-card.is-essay .source-segment { padding: 16px 17px; border: 1px solid #c7ccd5; background: rgba(255,255,255,.8); }
+.question-card.is-essay .source-segment + .source-segment { margin-top: 0; }
+.question-card.is-essay .source-marker { margin: -1px 0 10px; font-size: 12px; text-align: center; }
+.question-card.is-essay .source-conditions { background: #f8f6ef; }
+.question-card.is-essay .source-opinions { background: #fff; }
+.question-card.is-essay .answer-pane { padding-top: 18px; }
+.question-card.is-essay .answer-content { font-family: "Noto Serif KR", "Nanum Myeongjo", Batang, serif; font-size: 14px; line-height: 1.72; }
+.essay-reference-source { min-height: 100%; }
+.essay-requirement-strip { display: flex; flex-wrap: wrap; gap: 6px; padding: 4px 0 8px; }
+.essay-requirement-strip span { padding: 5px 8px; border: 1px solid #d6dbe4; border-radius: 999px; color: #4c5870; background: white; font: 750 9px/1 Pretendard, "Noto Sans KR", sans-serif; }
+
 .choice.has-diagram { min-height: 88px; align-items: stretch; padding-block: 9px; }
 .choice.has-diagram .choice-number, .choice.has-diagram .choice-mark { align-self: center; }
 .choice.has-diagram .choice-text { min-width: 0; display: grid; place-items: center; }
@@ -169,6 +188,8 @@ button { color: inherit; }
 .answer-copy { display: flex; flex-direction: column; gap: 3px; }
 .answer-copy small { color: var(--muted); font-size: 10px; font-weight: 700; }
 .answer-copy strong { font-size: 17px; letter-spacing: -.035em; }
+.essay-answer-badge { background: linear-gradient(145deg, #9a732e, #d0aa5d); }
+.essay-meta-chip { margin-left: auto; padding: 7px 10px; border: 1px solid #ddcda8; border-radius: 999px; color: #72551f; background: #fbf5e7; font-size: 10px; font-weight: 850; white-space: nowrap; }
 .result-chip { margin-left: auto; padding: 6px 10px; border-radius: 999px; font-size: 10px; font-weight: 850; }
 .result-chip.correct { color: var(--green); background: var(--green-soft); }
 .result-chip.wrong { color: var(--red); background: var(--red-soft); }
@@ -187,6 +208,10 @@ button { color: inherit; }
 .reasoning-step p { margin: 0; color: #4b566e; font-size: 11px; line-height: 1.62; word-break: keep-all; }
 .detail-trap { padding: 12px 14px; border-left: 3px solid #d59a58; border-radius: 0 10px 10px 0; background: #fff7ec; }
 .detail-trap strong { display: block; margin-bottom: 4px; color: #8b5728; font-size: 10px; }
+.essay-time-plan { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 7px; }
+.essay-time-plan div { display: flex; flex-direction: column; gap: 5px; padding: 10px; border: 1px solid #dfe3ea; border-radius: 11px; background: white; }
+.essay-time-plan strong { color: #9b7228; font-size: 10px; }
+.essay-time-plan span { color: #4a566d; font-size: 10px; line-height: 1.45; }
 .solution-visual { min-height: 0; display: grid; place-items: stretch; overflow: visible; }
 .visual-flow { align-self: center; display: grid; grid-template-columns: repeat(var(--count), minmax(0, 1fr)); align-items: stretch; gap: 25px; }
 .flow-step { position: relative; display: flex; flex-direction: column; justify-content: center; min-height: 104px; padding: 14px; border: 1px solid #d8dde6; border-radius: 14px; background: #fff; box-shadow: 0 7px 18px rgba(16,27,53,.055); }
@@ -204,6 +229,34 @@ button { color: inherit; }
 .equation-card span { color: var(--muted); font-size: 10px; font-weight: 750; }
 .equation-card code { color: #25395d; font: 700 13px/1.45 ui-monospace, SFMono-Regular, Menlo, monospace; white-space: pre-wrap; }
 
+.essay-outline { display: grid; gap: 9px; }
+.essay-section-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.essay-section-heading span { font-size: 13px; font-weight: 900; }
+.essay-section-heading small { color: var(--muted); font-size: 9px; }
+.essay-outline-grid { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 8px; }
+.essay-outline-grid article { display: grid; grid-template-columns: 24px 1fr; gap: 8px; align-items: start; min-height: 104px; padding: 11px; border: 1px solid #dce1e9; border-radius: 12px; background: white; }
+.essay-outline-grid article > span { display: grid; place-items: center; width: 23px; height: 23px; border-radius: 7px; color: white; background: var(--navy-2); font: 800 10px/1 Georgia, serif; }
+.essay-outline-grid strong { display: block; margin: 2px 0 5px; font-size: 10px; }
+.essay-outline-grid p { margin: 0; color: #566177; font-size: 9px; line-height: 1.48; word-break: keep-all; }
+
+.essay-models { display: grid; gap: 10px; }
+.essay-model-section { display: grid; gap: 10px; padding-top: 3px; }
+.model-answer-tabs { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 6px; }
+.model-answer-tabs button { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 36px; padding: 0 9px; border: 1px solid #d8dde6; border-radius: 10px; color: #59657b; background: white; font-size: 10px; font-weight: 800; cursor: pointer; }
+.model-answer-tabs button span { display: grid; place-items: center; width: 19px; height: 19px; border-radius: 6px; color: #795b23; background: #f5ead2; font: 800 9px/1 Georgia, serif; }
+.model-answer-tabs button.is-active { color: white; border-color: var(--navy-2); background: var(--navy-2); }
+.model-answer-tabs button.is-active span { color: var(--navy); background: #f1dcae; }
+.model-answer-panel { overflow: hidden; border: 1px solid #d5dae4; border-radius: 14px; background: white; }
+.model-answer-panel[hidden] { display: none; }
+.model-answer-panel header { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 11px 14px; border-bottom: 1px solid #e1e4ea; background: #f6f7f9; }
+.model-answer-panel header div { display: flex; align-items: center; gap: 8px; }
+.model-answer-panel header div > span { padding: 4px 7px; border-radius: 6px; color: #765821; background: #f3e8cf; font-size: 8px; font-weight: 900; }
+.model-answer-panel header strong { font-size: 11px; }
+.model-answer-panel header small { color: var(--muted); font-size: 9px; }
+.model-answer-body { padding: 16px 17px; font-family: "Noto Serif KR", "Nanum Myeongjo", Batang, serif; font-size: 12px; line-height: 1.82; letter-spacing: -.012em; word-break: keep-all; }
+.model-answer-body p { margin: 0 0 1em; text-align: justify; }
+.model-answer-body p:last-child { margin-bottom: 0; }
+
 .verdict-pane { min-width: 0; display: flex; flex-direction: column; padding: 18px 20px 26px; background: #f5f5f1; }
 .verdict-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin-bottom: 11px; }
 .verdict-heading span { font-size: 14px; font-weight: 850; }
@@ -213,6 +266,7 @@ button { color: inherit; }
 .verdict-status { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 9px; font-size: 13px; font-weight: 900; }
 .verdict.is-true .verdict-status { color: var(--green); background: var(--green-soft); }
 .verdict.is-false .verdict-status { color: var(--red); background: var(--red-soft); }
+.verdict.essay-score-point .verdict-status { color: #70531d; background: #f4e8cf; }
 .verdict strong { display: block; margin-bottom: 3px; font-size: 11px; }
 .verdict p { margin: 0; color: #4c5770; font-size: 11px; line-height: 1.5; word-break: keep-all; }
 
@@ -255,7 +309,7 @@ button { color: inherit; }
 @media (max-width: 920px), (max-width: 1180px) and (max-height: 620px) {
   .app-shell {
     height: var(--app-height, 100dvh);
-    grid-template-rows: calc(58px + env(safe-area-inset-top)) minmax(0, 1fr) calc(54px + env(safe-area-inset-bottom));
+    grid-template-rows: calc(58px + env(safe-area-inset-top)) 40px minmax(0, 1fr) calc(54px + env(safe-area-inset-bottom));
   }
   .topbar { padding: 0 13px; padding-top: max(0px, env(safe-area-inset-top)); }
   .brand-copy small, .progress-copy { display: none; }
@@ -263,6 +317,8 @@ button { color: inherit; }
   .topbar-center { gap: 5px; }
   .year-pill, .question-pill { height: 34px; padding-inline: 11px; }
   .progress-ring { width: 34px; height: 34px; }
+  .part-tabs { padding: 4px 9px; }
+  .part-tab { height: 31px; }
   .study-stage {
     min-height: 0;
     overflow-x: hidden;
@@ -335,6 +391,10 @@ button { color: inherit; }
   .choice { min-height: 44px; padding: 8px 10px; }
   .choice.has-diagram { min-height: 100px; }
   .argument-diagram { width: min(100%, 340px); }
+  .question-card.is-essay .question-layout { display: block; }
+  .question-card.is-essay .source-content, .question-card.is-essay .answer-content { font-size: 14px; line-height: 1.78; }
+  .question-card.is-essay .source-segment { padding: 14px 15px; }
+  .question-card.is-essay .answer-pane { padding-top: 14px; border-top: 0; }
   .answer-action-row {
     position: static;
     min-height: 60px;
@@ -367,6 +427,13 @@ button { color: inherit; }
   .visual-equation { grid-template-columns: 1fr; gap: 7px; }
   .equation-card { padding: 10px; }
   .equation-card code { font-size: 10px; }
+  .essay-time-plan { grid-template-columns: repeat(2, minmax(0,1fr)); }
+  .essay-outline-grid { grid-template-columns: 1fr; }
+  .essay-outline-grid article { min-height: 0; }
+  .model-answer-tabs { overflow-x: auto; grid-template-columns: repeat(3, minmax(120px,1fr)); scrollbar-width: none; }
+  .model-answer-tabs::-webkit-scrollbar { display: none; }
+  .model-answer-body { padding: 14px 15px; font-size: 13px; line-height: 1.82; }
+  .essay-meta-chip { padding: 6px 8px; font-size: 8px; }
   .verdict-pane { display: block; min-height: auto; padding: 15px 13px 20px; overflow: visible; }
   .verdict-heading { margin-bottom: 8px; }
   .verdict-list { grid-template-columns: 1fr; gap: 7px; overflow: visible; }
@@ -407,7 +474,9 @@ button { color: inherit; }
 }
 
 @media (max-width: 1180px) and (max-height: 520px) {
-  .app-shell { grid-template-rows: calc(52px + env(safe-area-inset-top)) minmax(0, 1fr) calc(48px + env(safe-area-inset-bottom)); }
+  .app-shell { grid-template-rows: calc(52px + env(safe-area-inset-top)) 36px minmax(0, 1fr) calc(48px + env(safe-area-inset-bottom)); }
+  .part-tabs { padding-block: 3px; }
+  .part-tab { height: 29px; }
   .question-head, .solution-head { min-height: 52px; }
   .study-stage { padding-block: 6px 5px; }
   .bottom-nav { grid-template-columns: 78px minmax(60px, 1fr) 78px; }

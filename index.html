@@ -6,10 +6,10 @@
     <meta name="theme-color" content="#101b35">
     <meta
       name="description"
-      content="LEET 추리논증 기출문제를 한 문항씩 풀고, 정답과 구조화된 해설을 바로 확인하는 학습 웹앱"
+      content="LEET 추리논증과 논술 기출문제를 한 문항씩 학습하고, 구조화된 해설과 모범답안을 확인하는 웹앱"
     >
-    <title>LEET 추리논증</title>
-    <link rel="stylesheet" href="./styles.css?v=20260721-diagram-fidelity">
+    <title>LEET 기출 학습</title>
+    <link rel="stylesheet" href="./styles.css?v=20260722-essay-part">
   </head>
   <body>
     <div class="app-shell">
@@ -18,7 +18,7 @@
           <span class="brand-mark">L</span>
           <span class="brand-copy">
             <strong>LEET</strong>
-            <small>추리논증</small>
+            <small data-brand-part>추리논증</small>
           </span>
         </button>
 
@@ -38,6 +38,11 @@
         </button>
       </header>
 
+      <nav class="part-tabs" role="tablist" aria-label="시험 파트 선택">
+        <button class="part-tab is-active" type="button" role="tab" aria-selected="true" data-part="reasoning">추리논증</button>
+        <button class="part-tab" type="button" role="tab" aria-selected="false" data-part="essay">논술</button>
+      </nav>
+
       <main class="study-stage" aria-live="polite">
         <div class="question-card" data-question-card>
           <section class="card-face card-front" aria-label="문제">
@@ -50,7 +55,7 @@
                 </div>
               </div>
               <div class="head-actions">
-                <button class="icon-button" type="button" data-action="reset-current" aria-label="현재 문항 답안 지우기">
+                <button class="icon-button" type="button" data-action="reset-current" data-reset-current aria-label="현재 문항 답안 지우기">
                   <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4v6h6M20 20v-6h-6M6.5 17.5a8 8 0 0 0 12-2M17.5 6.5a8 8 0 0 0-12 2" /></svg>
                 </button>
               </div>
@@ -67,7 +72,7 @@
                 </div>
                 <div class="answer-action-row">
                   <button class="primary-button" type="button" data-action="check-answer">
-                    정답 · 해설 보기
+                    <span data-reveal-label>정답 · 해설 보기</span>
                     <svg viewBox="0 0 20 20" aria-hidden="true"><path d="m7 4 6 6-6 6" /></svg>
                   </button>
                 </div>
@@ -78,7 +83,7 @@
           <section class="card-face card-back" aria-label="해설">
             <div class="solution-head">
               <div>
-                <span class="solution-eyebrow">ANSWER &amp; REASONING</span>
+                <span class="solution-eyebrow" data-solution-eyebrow>ANSWER &amp; REASONING</span>
                 <h2><span data-solution-number>01</span>번 해설</h2>
               </div>
               <button class="ghost-button" type="button" data-action="flip-front">
@@ -93,11 +98,12 @@
                 <div class="solution-summary" data-solution-summary></div>
                 <div class="solution-detail" data-solution-detail></div>
                 <div class="solution-visual" data-solution-visual></div>
+                <div class="essay-models" data-model-answers></div>
               </section>
               <aside class="verdict-pane" aria-label="선지 판정">
                 <div class="verdict-heading">
-                  <span>선지 판정</span>
-                  <small>근거를 짧게 확인하세요</small>
+                  <span data-verdict-heading>선지 판정</span>
+                  <small data-verdict-subtitle>근거를 짧게 확인하세요</small>
                 </div>
                 <div class="verdict-list" data-verdicts></div>
               </aside>
@@ -130,13 +136,13 @@
       <div class="sheet-card">
         <div class="sheet-head">
           <div><span data-index-year>2027학년도</span><h2>문항 바로가기</h2></div>
-          <div class="legend"><i class="done"></i>풀이 완료 <i class="correct"></i>정답 <i class="wrong"></i>오답</div>
+          <div class="legend" data-index-legend><i class="done"></i>풀이 완료 <i class="correct"></i>정답 <i class="wrong"></i>오답</div>
           <button class="close-button" type="button" data-action="close-dialog" aria-label="닫기">×</button>
         </div>
         <div class="question-index" data-question-index></div>
       </div>
     </dialog>
 
-    <script type="module" src="./app.js?v=20260721-diagram-fidelity"></script>
+    <script type="module" src="./app.js?v=20260722-essay-part"></script>
   </body>
 </html>
