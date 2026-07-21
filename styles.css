@@ -121,12 +121,28 @@ button { color: inherit; }
   vertical-align: -.32em;
   line-height: 1;
 }
+.source-math {
+  display: inline-block;
+  padding: 0 .06em;
+  color: #17233d;
+  font-family: "STIX Two Math", "Cambria Math", Georgia, "Times New Roman", serif;
+  font-variant-numeric: lining-nums tabular-nums;
+  font-weight: 600;
+  letter-spacing: 0;
+  white-space: nowrap;
+}
 .data-table-wrap { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
 .data-table { width: 100%; margin: .7em 0; border-collapse: separate; border-spacing: 0; overflow: hidden; border: 1px solid #c7cdd8; border-radius: 8px; font-family: Pretendard, "Noto Sans KR", sans-serif; font-size: .86em; text-align: center; }
 .data-table th, .data-table td { padding: .47em .6em; border-right: 1px solid #d6dae3; border-bottom: 1px solid #d6dae3; }
 .data-table tr:last-child td { border-bottom: 0; }
 .data-table th:last-child, .data-table td:last-child { border-right: 0; }
 .data-table th { color: #3b4862; background: #eef1f6; font-weight: 800; }
+.source-table-image { display: block; max-width: 100%; height: auto; margin: 0 auto; }
+.turing-tape-table { min-width: 620px; table-layout: fixed; }
+.turing-tape-table th, .turing-tape-table td { min-width: 44px; padding: .42em .22em; }
+.turing-tape-table .turing-head-cell { padding: .16em; background: #fbfaf6; }
+.turing-tape-table .turing-head-cell .source-table-image { width: 23px; height: 27px; object-fit: contain; }
+.turing-machine-table { min-width: 500px; }
 .formula { display: block; margin: .5em 0; padding: .6em .8em; border-radius: 8px; color: #273754; background: #eef2f8; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; text-align: center; }
 
 .answer-pane { display: flex; flex-direction: column; padding: 17px 20px 14px; background: linear-gradient(180deg, rgba(247,246,241,.8), rgba(255,254,250,.55)); }
@@ -170,6 +186,10 @@ button { color: inherit; }
 .argument-svg-plus { font-size: 13px; font-family: Georgia, "Times New Roman", serif; font-weight: 400; }
 .argument-svg-underline { stroke: #606b7f; stroke-width: 1.15; }
 .argument-svg-connector { fill: none; stroke: #526078; stroke-width: 1.2; stroke-linecap: round; stroke-linejoin: round; }
+.choice.has-source-image { min-height: 150px; align-items: stretch; padding-block: 10px; }
+.choice.has-source-image .choice-number, .choice.has-source-image .choice-mark { align-self: center; }
+.choice.has-source-image .choice-text { min-width: 0; display: grid; place-items: center; }
+.choice-source-image { display: block; width: min(100%, 540px); height: auto; max-height: 290px; object-fit: contain; mix-blend-mode: multiply; }
 
 .answer-action-row { flex: none; display: flex; align-items: center; justify-content: flex-end; gap: 12px; min-height: 52px; padding-top: 11px; border-top: 1px solid #e3e5ea; }
 .primary-button { display: inline-flex; align-items: center; gap: 8px; min-height: 38px; padding: 0 16px; border: 0; border-radius: 11px; color: white; background: linear-gradient(120deg, var(--navy), #243b6b); box-shadow: 0 7px 17px rgba(16,27,53,.18); font-size: 12px; font-weight: 800; cursor: pointer; }
@@ -397,6 +417,8 @@ button { color: inherit; }
   .choice { min-height: 44px; padding: 8px 10px; }
   .choice.has-diagram { min-height: 100px; }
   .argument-diagram { width: min(100%, 340px); }
+  .choice.has-source-image { min-height: 130px; }
+  .choice-source-image { width: 100%; max-height: none; }
   .question-card.is-essay .question-layout { display: block; }
   .question-card.is-essay .source-content, .question-card.is-essay .answer-content { font-size: 14px; line-height: 1.78; }
   .question-card.is-essay .source-segment { padding: 14px 15px; }

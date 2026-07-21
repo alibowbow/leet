@@ -27,6 +27,7 @@ python3 -m http.server 4174
 ## 데이터 검증
 
 ```bash
+node scripts/validate-2026.mjs
 node scripts/validate-data.mjs
 node scripts/validate-essay.mjs
 ```
@@ -35,7 +36,7 @@ node scripts/validate-essay.mjs
 
 ## 새 학년도 추가
 
-1. `data/2027.js`를 참고해 `data/2028.js` 같은 새 파일을 만듭니다.
+1. `data/2026.js` 또는 `data/2027.js`를 참고해 `data/2028.js` 같은 새 파일을 만듭니다.
 2. 각 문항에 `id`, `type`, `stem`, `sections`, `statements`, `choices`, `answer`, `explanation`을 작성합니다.
 3. 같은 학년도의 `data/연도-details.js`에 문항별 `principle`, `steps`, `trap` 상세 해설을 작성합니다.
 4. `data/index.js`에서 새 파일을 가져와 `exams` 배열에 추가합니다.
@@ -57,4 +58,4 @@ node scripts/validate-essay.mjs
 
 ## 출처
 
-문제 저작권은 법학전문대학원협의회에 있습니다. 이 저장소는 학습 편의를 위해 사용자가 제공한 2027학년도 추리논증 자료를 HTML 데이터로 구성한 비공식 학습 도구입니다.
+문제 저작권은 법학전문대학원협의회에 있습니다. 이 저장소는 학습 편의를 위해 사용자가 제공한 2026·2027학년도 자료를 HTML 데이터로 구성한 비공식 학습 도구입니다.

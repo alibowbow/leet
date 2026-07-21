@@ -1,4 +1,4 @@
-import { parts } from "./data/index.js?v=20260722-essay-part";
+import { parts } from "./data/index.js?v=20260722-2026-reasoning";
 import { circled } from "./data/helpers.js";
 
 const STORAGE_KEY = "leet-reasoning-v1";
@@ -95,14 +95,25 @@ function renderSection(block, index, marker = "") {
   const paragraphs = block.text
     ? block.text.split(/\n\n+/).map((part) => `<p>${formatInline(part)}</p>`).join("")
     : "";
+  const tableClass = block.tableClass ? ` ${escapeHtml(block.tableClass)}` : "";
   const dataTable = block.table ? `
-    <div class="data-table-wrap"><table class="data-table">
-      <thead><tr>${block.table.headers.map((header) => `<th>${formatInline(header)}</th>`).join("")}</tr></thead>
-      <tbody>${block.table.rows.map((row) => `<tr>${row.map((cell) => `<td>${formatInline(String(cell))}</td>`).join("")}</tr>`).join("")}</tbody>
+    <div class="data-table-wrap"><table class="data-table${tableClass}">
+      <thead><tr>${block.table.headers.map((header) => renderTableCell(header, "th")).join("")}</tr></thead>
+      <tbody>${block.table.rows.map((row) => `<tr>${row.map((cell) => renderTableCell(cell, "td")).join("")}</tr>`).join("")}</tbody>
     </table></div>` : "";
   const formula = block.formula ? `<span class="formula">${formatInline(block.formula)}</span>` : "";
   const kind = block.kind ? ` source-${escapeHtml(block.kind)}` : "";
   return `<section class="source-segment${kind}" data-section-index="${index}">${title}${paragraphs}${dataTable}${formula}</section>`;
+}
+
+function renderTableCell(cell, tag) {
+  if (!cell || typeof cell !== "object") return `<${tag}>${formatInline(String(cell ?? ""))}</${tag}>`;
+  const className = cell.className ? ` class="${escapeHtml(cell.className)}"` : "";
+  const image = cell.image
+    ? `<img class="source-table-image" src="${escapeHtml(cell.image)}" alt="${escapeHtml(cell.alt ?? "")}">`
+    : "";
+  const copy = cell.text ? formatInline(cell.text) : "";
+  return `<${tag}${className}>${image}${copy}</${tag}>`;
 }
 
 function renderSourceSections(sections) {
@@ -125,6 +136,7 @@ function formatInline(value = "") {
     .replace(/`(.+?)`/g, "<code>$1</code>")
     .replace(/\[\[u\]\]([\s\S]+?)\[\[\/u\]\]/g, '<span class="source-underline">$1</span>')
     .replace(/\[\[blank\]\]([\s\S]+?)\[\[\/blank\]\]/g, '<span class="source-blank">$1</span>')
+    .replace(/\[\[math\]\]([\s\S]+?)\[\[\/math\]\]/g, '<span class="source-math">$1</span>')
     .replace(/\n/g, "<br>");
 }
 
@@ -191,9 +203,9 @@ function renderObjectiveQuestion(question, response) {
         <p>${formatInline(statement.text)}</p>
       </div>`).join("")}</div>` : "";
   $("[data-choices]").innerHTML = question.choices.map((choice) => `
-    <button class="choice ${choice.diagram ? "has-diagram" : ""} ${response.selected === choice.number ? "is-selected" : ""}" type="button" data-choice="${choice.number}" aria-pressed="${response.selected === choice.number}"${choice.diagram ? ` aria-label="${escapeHtml(choice.diagram.ariaLabel)}"` : ""}>
+    <button class="choice ${choice.diagram ? "has-diagram" : ""} ${choice.image ? "has-source-image" : ""} ${response.selected === choice.number ? "is-selected" : ""}" type="button" data-choice="${choice.number}" aria-pressed="${response.selected === choice.number}"${choice.diagram || choice.image ? ` aria-label="${escapeHtml(choice.diagram?.ariaLabel ?? choice.image?.alt ?? choice.label)}"` : ""}>
       <span class="choice-number">${choice.number}</span>
-      <span class="choice-text">${choice.diagram ? renderArgumentDiagram(choice.diagram) : formatInline(choice.label)}</span>
+      <span class="choice-text">${choice.diagram ? renderArgumentDiagram(choice.diagram) : choice.image ? `<img class="choice-source-image" src="${escapeHtml(choice.image.src)}" alt="${escapeHtml(choice.image.alt)}">` : formatInline(choice.label)}</span>
       <span class="choice-mark">✓</span>
     </button>`).join("");
 }
@@ -213,7 +225,7 @@ function renderEssayQuestion(question) {
 
 function renderSolution(question, response) {
   const answerChoice = question.choices[question.answer - 1];
-  const answerLabel = answerChoice.diagram ? "논증 구조 도식" : answerChoice.label;
+  const answerLabel = answerChoice.label;
   const checked = Boolean(response.checked);
   const correct = checked && response.selected === question.answer;
   $("[data-answer-reveal]").innerHTML = `
