@@ -18,8 +18,7 @@ export function argumentChoices(items) {
     label: item.label,
     diagram: {
       type: "argument",
-      roots: item.roots,
-      levels: item.levels,
+      layers: item.layers,
       ariaLabel: item.ariaLabel ?? item.label,
     },
   }));

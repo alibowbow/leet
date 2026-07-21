@@ -106,6 +106,16 @@ button { color: inherit; }
   text-underline-offset: .15em;
   text-decoration-skip-ink: auto;
 }
+.source-blank {
+  display: inline-grid;
+  width: 3.4em;
+  min-height: 1.55em;
+  margin: 0 .12em;
+  place-items: center;
+  border: 1px solid #6f7480;
+  vertical-align: -.32em;
+  line-height: 1;
+}
 .data-table-wrap { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
 .data-table { width: 100%; margin: .7em 0; border-collapse: separate; border-spacing: 0; overflow: hidden; border: 1px solid #c7cdd8; border-radius: 8px; font-family: Pretendard, "Noto Sans KR", sans-serif; font-size: .86em; text-align: center; }
 .data-table th, .data-table td { padding: .47em .6em; border-right: 1px solid #d6dae3; border-bottom: 1px solid #d6dae3; }
@@ -132,17 +142,15 @@ button { color: inherit; }
 .choice-mark { opacity: 0; color: var(--gold); font-weight: 900; }
 .choice.is-selected .choice-mark { opacity: 1; }
 
-.choice.has-diagram { min-height: 88px; align-items: stretch; }
+.choice.has-diagram { min-height: 88px; align-items: stretch; padding-block: 9px; }
 .choice.has-diagram .choice-number, .choice.has-diagram .choice-mark { align-self: center; }
-.choice.has-diagram .choice-text { min-width: 0; }
-.argument-diagram { display: flex; width: 100%; min-height: 72px; flex-direction: column; align-items: center; justify-content: center; color: #26344f; font-family: "Noto Serif KR", "Nanum Myeongjo", Batang, serif; font-size: 12px; font-weight: 700; line-height: 1; }
-.argument-roots, .argument-root-arrows { display: grid; width: min(100%, 280px); grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px; place-items: center; }
-.argument-group { display: inline-flex; align-items: center; justify-content: center; padding: 0 3px 2px; border-bottom: 1px solid #606b7f; white-space: nowrap; }
-.argument-term { display: inline-block; }
-.argument-plus { margin: 0 3px; color: #6a7487; font-family: Georgia, serif; font-weight: 400; }
-.argument-root-arrows { height: 12px; color: #8b6a29; font-size: 11px; }
-.argument-level { display: grid; min-height: 17px; place-items: center; }
-.argument-down { display: grid; height: 11px; place-items: center; color: #8b6a29; font-size: 10px; line-height: 1; }
+.choice.has-diagram .choice-text { min-width: 0; display: grid; place-items: center; }
+.argument-diagram { display: block; width: min(100%, 360px); height: auto; overflow: visible; color: #26344f; }
+.argument-svg-term, .argument-svg-plus { fill: currentColor; font-family: "Noto Serif KR", "Nanum Myeongjo", Batang, serif; }
+.argument-svg-term { font-size: 15px; font-weight: 650; }
+.argument-svg-plus { font-size: 13px; font-family: Georgia, "Times New Roman", serif; font-weight: 400; }
+.argument-svg-underline { stroke: #606b7f; stroke-width: 1.15; }
+.argument-svg-connector { fill: none; stroke: #526078; stroke-width: 1.2; stroke-linecap: round; stroke-linejoin: round; }
 
 .answer-action-row { flex: none; display: flex; align-items: center; justify-content: flex-end; gap: 12px; min-height: 52px; padding-top: 11px; border-top: 1px solid #e3e5ea; }
 .primary-button { display: inline-flex; align-items: center; gap: 8px; min-height: 38px; padding: 0 16px; border: 0; border-radius: 11px; color: white; background: linear-gradient(120deg, var(--navy), #243b6b); box-shadow: 0 7px 17px rgba(16,27,53,.18); font-size: 12px; font-weight: 800; cursor: pointer; }
@@ -326,8 +334,7 @@ button { color: inherit; }
   .choice-grid { grid-template-columns: 1fr; gap: 7px; }
   .choice { min-height: 44px; padding: 8px 10px; }
   .choice.has-diagram { min-height: 100px; }
-  .argument-diagram { min-height: 84px; font-size: 12px; }
-  .argument-roots, .argument-root-arrows { width: min(100%, 260px); gap: 18px; }
+  .argument-diagram { width: min(100%, 340px); }
   .answer-action-row {
     position: static;
     min-height: 60px;

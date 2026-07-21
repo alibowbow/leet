@@ -1,4 +1,4 @@
-import { exams } from "./data/index.js?v=20260721-source-fidelity";
+import { exams } from "./data/index.js?v=20260721-diagram-fidelity";
 import { circled } from "./data/helpers.js";
 
 const STORAGE_KEY = "leet-reasoning-v1";
@@ -105,6 +105,7 @@ function formatInline(value = "") {
     .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
     .replace(/`(.+?)`/g, "<code>$1</code>")
     .replace(/\[\[u\]\]([\s\S]+?)\[\[\/u\]\]/g, '<span class="source-underline">$1</span>')
+    .replace(/\[\[blank\]\]([\s\S]+?)\[\[\/blank\]\]/g, '<span class="source-blank">$1</span>')
     .replace(/\n/g, "<br>");
 }
 
@@ -182,10 +183,58 @@ function renderSolution(question, response) {
 }
 
 function renderArgumentDiagram(diagram) {
-  const renderGroup = (group) => `<span class="argument-group">${group.map((item, index) => `${index ? '<i class="argument-plus">+</i>' : ""}<span class="argument-term">${escapeHtml(item)}</span>`).join("")}</span>`;
-  const roots = diagram.roots.map(renderGroup).join("");
-  const levels = diagram.levels.map((level, index) => `${index ? '<span class="argument-down">↓</span>' : ""}<span class="argument-level">${renderGroup(level)}</span>`).join("");
-  return `<span class="argument-diagram" aria-hidden="true"><span class="argument-roots">${roots}</span><span class="argument-root-arrows" aria-hidden="true"><i>↓</i><i>↓</i></span>${levels}</span>`;
+  const width = 360;
+  const center = width / 2;
+  const termStep = 34;
+  const termHalfWidth = 9;
+  const firstBaseline = 16;
+  const layerGap = 33;
+  const layers = diagram.layers.map((layer) => layer.map((group) => ({ ...group, center })));
+  const termX = (group, index) => group.center + (index - ((group.items.length - 1) / 2)) * termStep;
+  const targetX = (layer, target) => {
+    for (const group of layer) {
+      const index = group.items.indexOf(target);
+      if (index >= 0) return termX(group, index);
+    }
+    return center;
+  };
+
+  const lastLayer = layers.at(-1);
+  lastLayer.forEach((group, index) => {
+    group.center = width * ((index + 1) / (lastLayer.length + 1));
+  });
+  for (let layerIndex = layers.length - 2; layerIndex >= 0; layerIndex -= 1) {
+    layers[layerIndex].forEach((group) => {
+      group.center = targetX(layers[layerIndex + 1], group.to);
+    });
+  }
+
+  const extents = layers.flatMap((layer) => layer.flatMap((group) => [
+    termX(group, 0) - termHalfWidth,
+    termX(group, group.items.length - 1) + termHalfWidth,
+  ]));
+  const shift = center - ((Math.min(...extents) + Math.max(...extents)) / 2);
+  layers.flat().forEach((group) => { group.center += shift; });
+
+  const rows = layers.map((layer, layerIndex) => {
+    const y = firstBaseline + (layerIndex * layerGap);
+    return layer.map((group, groupIndex) => {
+      const terms = group.items.map((item, itemIndex) => {
+        const x = termX(group, itemIndex);
+        const plus = itemIndex ? `<text class="argument-svg-plus" x="${x - (termStep / 2)}" y="${y}" text-anchor="middle">+</text>` : "";
+        return `${plus}<text class="argument-svg-term" data-layer="${layerIndex}" data-term="${escapeHtml(item)}" x="${x}" y="${y}" text-anchor="middle">${escapeHtml(item)}</text>`;
+      }).join("");
+      const underline = group.to ? `<line class="argument-svg-underline" data-layer="${layerIndex}" data-group="${groupIndex}" x1="${termX(group, 0) - termHalfWidth - 1}" y1="${y + 5}" x2="${termX(group, group.items.length - 1) + termHalfWidth + 1}" y2="${y + 5}" />` : "";
+      const arrow = group.to ? (() => {
+        const nextY = firstBaseline + ((layerIndex + 1) * layerGap);
+        const x = group.center;
+        return `<g class="argument-svg-connector" data-from-layer="${layerIndex}" data-group="${groupIndex}" data-target="${escapeHtml(group.to)}" data-axis-x="${x}"><line x1="${x}" y1="${y + 8}" x2="${x}" y2="${nextY - 15}" /><path d="M ${x - 3} ${nextY - 19} L ${x} ${nextY - 15} L ${x + 3} ${nextY - 19}" /></g>`;
+      })() : "";
+      return `${terms}${underline}${arrow}`;
+    }).join("");
+  }).join("");
+  const height = firstBaseline + ((layers.length - 1) * layerGap) + 17;
+  return `<svg class="argument-diagram" viewBox="0 0 ${width} ${height}" role="img" aria-label="${escapeHtml(diagram.ariaLabel)}" focusable="false">${rows}</svg>`;
 }
 
 function renderSolutionDetail(detail) {
