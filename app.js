@@ -1,4 +1,4 @@
-import { exams } from "./data/index.js";
+import { exams } from "./data/index.js?v=20260721-source-fidelity";
 import { circled } from "./data/helpers.js";
 
 const STORAGE_KEY = "leet-reasoning-v1";
